@@ -43,13 +43,29 @@ import java.util.concurrent.Executors;
 public class ExecutorServiceDemo01 {
 
     public static void main(String[] args) {
-        // Here we are using Executor Service by surrounding it with try-with-resources block.
+//        withAutoCloseable();
+        withoutAutoCloseable();
+    }
+
+    // without auto-closeable we have to issue shutdown for short-lived application
+    private static void withoutAutoCloseable() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(ExecutorServiceDemo01::task);
+        log.info("submitted");
+        executorService.shutdown();
+    }
+
+    private static void withAutoCloseable() {
+        // Here we are using Executor Service by surrounding it with a try-with-resources block.
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
             executorService.submit(ExecutorServiceDemo01::task);
+            executorService.submit(ExecutorServiceDemo01::task);
+            executorService.submit(ExecutorServiceDemo01::task);
+            executorService.submit(ExecutorServiceDemo01::task);
             log.info("submitted");
-            executorService.shutdown();
         }
     }
+
 
     /**
      * But are we supposed to use Executor Service with try-with-resources block always?
