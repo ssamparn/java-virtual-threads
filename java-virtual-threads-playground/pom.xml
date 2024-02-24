@@ -44,6 +44,7 @@
           <source>21</source>
           <target>21</target>
           <compilerArgs>--enable-preview</compilerArgs>
+          <!-- To use the preview feature of Java 21 use enable-preview option -->
         </configuration>
       </plugin>
     </plugins>
