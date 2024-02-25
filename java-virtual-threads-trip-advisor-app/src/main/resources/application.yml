@@ -1,1 +1,16 @@
+server:
+  port: 8080
 
+spring:
+  threads:
+    virtual:
+      enabled: true
+
+service.url:
+  accommodations: 'http://localhost:7070/sec02/accommodations'
+  events: 'http://localhost:7070/sec02/events'
+  local-recommendations: 'http://localhost:7070/sec02/local-recommendations'
+  transportation: 'http://localhost:7070/sec02/transportation'
+  weather: 'http://localhost:7070/sec02/weather'
+  flight-search: 'http://localhost:7070/sec03/flight/search'
+  flight-reservation: 'http://localhost:7070/sec03/flight/reserve'

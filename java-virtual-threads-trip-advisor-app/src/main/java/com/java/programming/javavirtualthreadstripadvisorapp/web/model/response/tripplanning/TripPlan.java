@@ -8,6 +8,7 @@ import com.java.programming.javavirtualthreadstripadvisorapp.dto.tripplanning.We
 
 import java.util.List;
 
+// web model for response from Trip Advisor Application
 public record TripPlan(String airportCode,
                        List<Accommodation> accommodations,
                        Weather weather,
