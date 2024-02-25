@@ -15,6 +15,7 @@
 
   <modules>
     <module>java-virtual-threads-playground</module>
+    <module>java-virtual-threads-trip-advisor-app</module>
   </modules>
 
 </project>
