@@ -11,11 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
+
+import java.net.http.HttpClient;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Configuration
 public class RestClientConfig {
+
+    @Value("${spring.threads.virtual.enabled}")
+    private boolean isVirtualThreadEnabled;
 
     @Bean
     public AccommodationServiceClient accommodationServiceClient(@Value("${service.url.accommodations}") String baseUrl) {
@@ -54,9 +61,16 @@ public class RestClientConfig {
 
     private RestClient buildRestClient(String baseUrl) {
         log.info("base url: {}", baseUrl);
-        return RestClient.builder()
-                .baseUrl(baseUrl)
-                .build();
+        RestClient.Builder restClientBuilder = RestClient.builder().baseUrl(baseUrl);
+
+        if (isVirtualThreadEnabled) {
+            restClientBuilder = restClientBuilder.requestFactory(
+                new JdkClientHttpRequestFactory(HttpClient.newBuilder()
+                    .executor(Executors.newVirtualThreadPerTaskExecutor())
+                    .build())); // rest client builder for virtual threads
+        }
+
+        return restClientBuilder.build(); // rest client builder for platform threads
     }
 
 }
