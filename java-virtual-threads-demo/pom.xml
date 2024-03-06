@@ -11,7 +11,7 @@
     <artifactId>java-virtual-threads-demo</artifactId>
     <name>java-virtual-threads-demo</name>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,4 +53,11 @@
         </plugins>
     </build>
 
+    <modules>
+        <module>slow-service</module>
+        <module>spring-web-rest-call</module>
+        <module>spring-webflux-rest-call</module>
+        <module>virtual-thread-rest-call</module>
+        <module>kotlin-coroutines-rest-call</module>
+    </modules>
 </project>

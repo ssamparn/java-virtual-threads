@@ -5,9 +5,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/java-virtual-threads-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/java-virtual-threads-demo/spring-web-rest-call/pom.xml" />
+        <option value="$PROJECT_DIR$/java-virtual-threads-demo/spring-webflux-rest-call/pom.xml" />
+        <option value="$PROJECT_DIR$/java-virtual-threads-demo/virtual-thread-rest-call/pom.xml" />
       </list>
     </option>
-    <option name="workspaceImportForciblyTurnedOn" value="true" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
