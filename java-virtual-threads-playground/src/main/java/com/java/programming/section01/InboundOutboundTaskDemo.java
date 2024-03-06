@@ -4,24 +4,30 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Primary motivation behind introducing virtual threads in Java is to simplify concurrent programming by making threads lightweight.
- * Virtual threads have lower memory overhead compared to platform threads.
+ * Virtual threads have lower memory overhead compared to platform threads and provides the scalability that modern java application needs
  * To demo some blocking operations with both platform and virtual threads.
  * */
 public class InboundOutboundTaskDemo {
 
-    public static final int MAX_PLATFORM = 50;
+    public static final int MAX_PLATFORM = 10;
     public static final int MAX_VIRTUAL = 20;
 
     public static void main(String[] args) throws InterruptedException {
-//         platformThreadDemo();
+         platformThreadDemo();
 //         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
 //         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
 //         virtualThreadCreationDemo();
-        virtualThreadCreationWithCountDownLatchDemo();
+//        virtualThreadCreationWithCountDownLatchDemo();
     }
 
-    // Java Threads are basically OS threads.
-    // We are going to call Java Threads as Platform Threads to avoid confusion and make a distinction between OS threads and Virtual threads.
+    /**
+     * Traditional Java Threads which was introduced 25 years ago, are basically a wrapper around Kernel Threads or OS threads.
+     * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
+     * Previously there was 1 kind of thread in Java so no confusion.
+     * After the introduction of Java Virtual Threads, to clear confusion
+     * Traditional Java OS Threads are called Platform Threads.
+     * This makes a clear distinction between OS threads and Virtual threads.
+     * */
 
     /* *
      * To create a simple java platform thread.
@@ -30,7 +36,7 @@ public class InboundOutboundTaskDemo {
         for (int i = 0; i < MAX_PLATFORM; i++) {
             int j = i;
             Thread thread = new Thread(() -> Task.ioIntensive(j));
-            thread.start();;
+            thread.start();
         }
     }
 
@@ -49,7 +55,6 @@ public class InboundOutboundTaskDemo {
             int j = i;
             Thread thread = threadBuilder.unstarted(() -> Task.ioIntensive(j));
             thread.start();
-
         }
     }
 
