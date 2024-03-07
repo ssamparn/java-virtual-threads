@@ -6,7 +6,6 @@ public class PlatformThreadDemo {
 
     public static final int MAX_PLATFORM = 10;
 
-
     public static void main(String[] args) throws InterruptedException {
          platformThreadDemo();
 //         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
