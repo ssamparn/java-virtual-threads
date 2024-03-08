@@ -1,15 +1,15 @@
 package com.java.programming.virtualthreadcreation;
 
-import com.java.programming.plaformthreadcreation.Task;
+import com.java.programming.plaformthreadcreation.IOIntensiveTask;
 
 import java.util.concurrent.CountDownLatch;
 
 public class VirtualThreadDemo {
 
-    public static final int MAX_VIRTUAL = 10000;
+    public static final int MAX_VIRTUAL = 20000;
 
     public static void main(String[] args) throws InterruptedException {
-//        virtualThreadCreationDemo();
+        virtualThreadCreationDemo();
         virtualThreadCreationWithCountDownLatchDemo();
     }
 
@@ -20,7 +20,7 @@ public class VirtualThreadDemo {
         Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual();
         for (int i = 0; i < MAX_VIRTUAL; i++) {
             int j = i;
-            Thread thread = virtualThreadBuilder.unstarted(() -> Task.ioIntensive(j));
+            Thread thread = virtualThreadBuilder.unstarted(() -> IOIntensiveTask.ioIntensive(j));
             thread.start();
         }
     }
@@ -34,7 +34,7 @@ public class VirtualThreadDemo {
         for (int i = 0; i < MAX_VIRTUAL; i++) {
             int j = i;
             Thread thread = virtualThreadBuilder.unstarted(() -> {
-                Task.ioIntensive(j);
+                IOIntensiveTask.ioIntensive(j);
                 latch.countDown();
             });
             thread.start();
