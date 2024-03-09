@@ -10,7 +10,7 @@ public class IOIntensiveTask {
     public static void ioIntensive(int i) {
         try {
             log.info("Starting I/O task {}, in thread : {}", i, Thread.currentThread());
-            Thread.sleep(Duration.ofSeconds(10));
+            Thread.sleep(Duration.ofSeconds(5));
             log.info("Ending I/O task {}, in thread : {}", i, Thread.currentThread());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

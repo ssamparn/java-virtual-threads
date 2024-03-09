@@ -1,4 +1,4 @@
-package com.java.programming.section05;
+package com.java.programming.snchronization;
 
 import com.java.programming.util.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class RaceConditionDemo01 {
+public class SynchronizationWithComputeTask {
 
     private static final List<Integer> list = new ArrayList<>();
+//    solution 1: use synchronized list.
+//    private static final List<Integer> list = Collections.synchronizedList(new ArrayList<>());
 
     public static void main(String[] args) {
         // platform thread
-        demo(Thread.ofPlatform());
+//        demo(Thread.ofPlatform());
         // virtual thread
-//        demo(Thread.ofVirtual());
-        CommonUtils.sleep(Duration.ofSeconds(2));
+        demo(Thread.ofVirtual());
+        CommonUtils.sleep(Duration.ofSeconds(3));
         log.info("List size: {}", list.size());
-        // The size of the list should have been 10000, but it will never be 10000 because race condition will occur.
-        // Lets fix this issue in next class.
     }
 
     private static void demo(Thread.Builder threadBuilder) {
@@ -35,7 +35,8 @@ public class RaceConditionDemo01 {
         }
     }
 
-    private static void inMemoryTask() {
+    // solution 2: use synchronized block
+    private static synchronized void inMemoryTask() {
         list.add(1);
     }
 }

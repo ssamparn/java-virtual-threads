@@ -13,7 +13,6 @@ public class CpuIntensiveTask {
         // log.info("Ending CPU Intensive IOIntensiveTask. Time taken : {} ms", timeTaken);
     }
 
-    // 2 ^ N algorithm - intentionally done this way to simulate CPU intensive task.
     private static long findFibonacci(long input) {
         if (input < 2) return input;
 

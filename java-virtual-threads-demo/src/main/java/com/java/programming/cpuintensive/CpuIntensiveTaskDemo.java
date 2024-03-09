@@ -12,10 +12,10 @@ public class CpuIntensiveTaskDemo {
     public static void main(String[] args) {
         log.info("Tasks Count: {}", TASKS_COUNT);
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 10; i++) {
             // platform thread
-            long totalTimeTakenByPlatformThread = CommonUtils.timer(() -> demo(Thread.ofPlatform()));
-            log.info("Total time taken with platform threads {} ms", totalTimeTakenByPlatformThread);
+//            long totalTimeTakenByPlatformThread = CommonUtils.timer(() -> demo(Thread.ofPlatform()));
+//            log.info("Total time taken with platform threads {} ms", totalTimeTakenByPlatformThread);
             // virtual thread
             long totalTimeTakenByVirtualThread = CommonUtils.timer(() -> demo(Thread.ofVirtual().name("virtual-")));
             log.info("Total time taken with virtual threads {} ms", totalTimeTakenByVirtualThread);

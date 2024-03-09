@@ -7,12 +7,12 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class PlatformThreadDemo {
 
-    public static final int MAX_PLATFORM = 10000;
+    public static final int MAX_PLATFORM = 20000;
 
     public static void main(String[] args) throws InterruptedException {
          platformThreadDemo();
-         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
-         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
+//         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
+//         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
     }
 
     /* *
