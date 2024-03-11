@@ -27,6 +27,6 @@ public class EmployeeHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(employees, Employee.class)
                 .switchIfEmpty(ServerResponse.notFound().build())
-                .delayElement(Duration.of(ThreadLocalRandom.current().nextLong(500, 2000), ChronoUnit.MILLIS));
+                .delayElement(Duration.of(ThreadLocalRandom.current().nextLong(1500, 2500), ChronoUnit.MILLIS));
     }
 }
