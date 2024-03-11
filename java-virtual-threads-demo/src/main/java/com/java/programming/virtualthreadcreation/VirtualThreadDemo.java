@@ -30,8 +30,7 @@ public class VirtualThreadDemo {
      * */
     private static void virtualThreadCreationWithCountDownLatchDemo() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(MAX_VIRTUAL);
-        Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual();
-//                .name("virtual-", 1);
+        Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual().name("virtual-", 1);
         for (int i = 0; i < MAX_VIRTUAL; i++) {
             int j = i;
             Thread thread = virtualThreadBuilder.unstarted(() -> {
