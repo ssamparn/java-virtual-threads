@@ -7,10 +7,10 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class PlatformThreadDemo {
 
-    public static final int MAX_PLATFORM = 20000;
+    public static final int MAX_PLATFORM = 10000;
 
     public static void main(String[] args) throws InterruptedException {
-         platformThreadDemo();
+         platformThreadCreationDemo();
 //         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
 //         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
     }
@@ -18,7 +18,7 @@ public class PlatformThreadDemo {
     /* *
      * To create a simple java platform thread.
      * */
-    private static void platformThreadDemo() {
+    private static void platformThreadCreationDemo() {
         for (int i = 0; i < MAX_PLATFORM; i++) {
             int j = i;
             Thread thread = new Thread(() -> IOIntensiveTask.ioIntensive(j));
