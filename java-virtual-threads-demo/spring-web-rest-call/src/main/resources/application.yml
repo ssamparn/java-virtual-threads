@@ -2,5 +2,5 @@ server:
   port: 8080
   tomcat:
     threads:
-      max: 200
+      max: 400
       min-spare: 10
