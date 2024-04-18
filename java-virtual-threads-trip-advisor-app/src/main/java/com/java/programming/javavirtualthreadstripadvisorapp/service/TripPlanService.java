@@ -13,6 +13,7 @@ import com.java.programming.javavirtualthreadstripadvisorapp.dto.tripplanning.We
 import com.java.programming.javavirtualthreadstripadvisorapp.web.model.response.tripplanning.TripPlan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,6 +31,7 @@ public class TripPlanService {
     private final LocalRecommendationServiceClient localRecommendationServiceClient;
     private final TransportationServiceClient transportationServiceClient;
     private final WeatherServiceClient weatherServiceClient;
+    @Qualifier("virtualThreadExecutor")
     private final ExecutorService executorService;
 
     public TripPlan getTripPlan(String airportCode) {
