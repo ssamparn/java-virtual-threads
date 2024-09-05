@@ -8,6 +8,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/* *
+ * CONCURRENCY Vs. PARALLELISM:
+ *
+ * Concurrency and Parallelism are not two competing things.
+ * Concurrency is a broder concept. Parallelism is a specific concept within Concurrency.
+ * Concurrency:
+ *      Concurrency is about dealing with multiple tasks over a period of time, while performing only one task at any given time. e.g: Launching both Chrome and Firefox at the same time.
+ *      Even though launched simultaneously, CPU engages with one browser at a time but giving an illusion that both browsers are running at the same time.
+ *      e.g: One chef prepares multiple foods.
+ *
+ * Parallelism:
+ *      Breaking a large task into multiple smaller tasks, where each small task can be processed independently to achieve significant performance improvement.
+ *      e.g: Sort an array with 6 million elements. Divide the task into 6 threads and each thread processes 1 million elements.
+ *      e.g: 6 chefs prepares 6 foods.
+ * */
+
 @Slf4j
 public class AccessResponseUsingFutureDemo03 {
 
@@ -28,19 +44,5 @@ public class AccessResponseUsingFutureDemo03 {
         }
     }
 
-    /* *
-     * CONCURRENCY Vs. PARALLELISM:
-     *
-     * Concurrency and Parallelism are not two competing things.
-     * Concurrency is a broder concept. Parallelism is a specific concept within Concurrency.
-     * Concurrency:
-     *      Concurrency is about dealing with multiple tasks over a period of time, while performing only one task at any given time. e.g: Launching both Chrome and Firefox at the same time.
-     *      Even though launched simultaneously, CPU engages with one browser at a time but giving an illusion that both browsers are running at the same time.
-     *      e.g: One chef prepares multiple foods.
-     *
-     * Parallelism:
-     *      Breaking a large task into multiple smaller tasks, where each small task can be processed independently to achieve significant performance improvement.
-     *      e.g: Sort an array with 6 million elements. Divide the task into 6 threads and each thread processes 1 million elements.
-     *      e.g: 6 chefs prepares 6 foods.
-     * */
+
 }

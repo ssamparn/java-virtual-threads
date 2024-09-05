@@ -2,7 +2,7 @@ package com.java.programming.section01;
 
 import java.util.concurrent.CountDownLatch;
 
-/**
+/* *
  * Primary motivation behind introducing virtual threads in Java is to simplify concurrent programming by making threads lightweight.
  * Virtual threads have lower memory overhead compared to platform threads and provides the scalability that modern java application needs
  * To demo some blocking operations with both platform and virtual threads.
@@ -20,7 +20,7 @@ public class InboundOutboundTaskDemo {
 //        virtualThreadCreationWithCountDownLatchDemo();
     }
 
-    /**
+    /* *
      * Traditional Java Threads which was introduced 25 years ago, are basically a wrapper around Kernel Threads or OS threads.
      * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
      * Previously there was 1 kind of thread in Java so no confusion.

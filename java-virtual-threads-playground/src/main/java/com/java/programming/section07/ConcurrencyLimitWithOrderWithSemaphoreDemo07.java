@@ -28,9 +28,11 @@ public class ConcurrencyLimitWithOrderWithSemaphoreDemo07 {
         }
     }
 
-    // Let's imagine that the product service is a 3rd party service, and we have a contract in place.
-    // Because of the contract we are allowed to make 3 concurrent calls.
-    // In that case, we can not use cached thread pool. We should use fixed thread pool. But then how should we achieve this using virtual threads?
+    /* *
+     * Let's imagine that the product service is a 3rd party service, and we have a contract in place.
+     * Because of the contract we are allowed to make 3 concurrent calls.
+     * In that case, we can not use cached thread pool. We should use fixed thread pool. But then how should we achieve this using virtual threads?
+     * */
     private static String printProduct(int id) {
         String product = RestClient.getProduct(id);
         log.info("Product Id: {} => with product info: {}", id, product);

@@ -15,7 +15,7 @@ public class CooperativeSchedulingDemo {
     /* *
      * To see the cooperative scheduling better, we need limited resources.
      * We can see the behavior better with a single processor.
-     */
+     * */
 
     static {
         System.setProperty("jdk.virtualThreadScheduler.parallelism", "1");

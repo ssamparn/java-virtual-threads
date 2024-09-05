@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
+/* *
  * A simple demo of structured concurrency where we want to cancel all the running subtasks when we get the first success response.
  * For this we will use ShutdownOnFailure, which is an inner class of StructuredTaskScope.
  * */

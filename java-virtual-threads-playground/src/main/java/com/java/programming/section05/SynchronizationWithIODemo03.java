@@ -36,7 +36,7 @@ public class SynchronizationWithIODemo03 {
         }
     }
 
-    /**
+    /* *
      * Because of synchronized code block, only one thread will be able to enter the code block.
      * Rest of the threads will be sleeping.
      * There is a concept called pinning virtual thread.

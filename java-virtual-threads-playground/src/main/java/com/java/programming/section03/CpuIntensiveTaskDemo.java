@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 
-/**
+/* *
  * If you have a CPU Intensive task and we modify our production application to use virtual threads,
  * then using virtual threads is not going to improve our application performance.
  * We can continue to use platform threads. But if we have a microservices architecture and we have a lot of network calls (I/O operations),

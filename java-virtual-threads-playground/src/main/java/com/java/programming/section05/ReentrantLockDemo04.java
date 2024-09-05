@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
+/* *
  * Reentrant Lock:
  *
  * synchronized was introduced long back in Java. Then Java 5 introduced Reentrant Lock.
