@@ -3,37 +3,48 @@ package com.java.programming.section01;
 import java.util.concurrent.CountDownLatch;
 
 /* *
+ * Traditional Java Threads which was introduced 25 years ago, are basically a wrapper around Kernel Threads or OS threads.
+ * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
+ * Previously there was 1 kind of thread in Java so no confusion.
+ * After the introduction of Java Virtual Threads, to clear confusion
+ * Traditional Java OS Threads are called Platform Threads.
+ * This makes a clear distinction between OS threads and Virtual threads.
+ * */
+
+/* *
  * Primary motivation behind introducing virtual threads in Java is to simplify concurrent programming by making threads lightweight.
- * Virtual threads have lower memory overhead compared to platform threads and provides the scalability that modern java application needs
+ * Virtual threads have lower memory overhead compared to platform threads and provides the scalability that modern java application needs.
  * To demo some blocking operations with both platform and virtual threads.
  * */
 public class InboundOutboundTaskDemo {
 
-    public static final int MAX_PLATFORM = 10;
-    public static final int MAX_VIRTUAL = 20;
+    public static final int MAX_PLATFORM_THREADS = 10;
+//    public static final int MAX_PLATFORM_THREADS = 50000;
+    public static final int MAX_VIRTUAL_THREADS = 24;
+//    public static final int MAX_VIRTUAL_THREADS = 50000;
 
     public static void main(String[] args) throws InterruptedException {
-         platformThreadDemo();
-//         platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod();
+//         platformThreadsCreationDemo();
+//         platformThreadsCreationDemoUsingOfPlatformMethod();
 //         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
 //         virtualThreadCreationDemo();
-//        virtualThreadCreationWithCountDownLatchDemo();
+        virtualThreadCreationWithCountDownLatchDemo();
     }
 
     /* *
-     * Traditional Java Threads which was introduced 25 years ago, are basically a wrapper around Kernel Threads or OS threads.
-     * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
-     * Previously there was 1 kind of thread in Java so no confusion.
-     * After the introduction of Java Virtual Threads, to clear confusion
-     * Traditional Java OS Threads are called Platform Threads.
-     * This makes a clear distinction between OS threads and Virtual threads.
+     * To create a simple java platform thread using new Thread(Runnable).
+     * Running 10 or 20 platform threads is easy, but running 50000 Platform threads will lead to OOM.
+     * At some point Native Method, the method which is responsible for starting a thread can not start more threads and will lead to OOM (Stack Memory which is the memory allocated to each thread will be done with space)
+     *
+     * Failed to start thread "Unknown thread" - pthread_create failed (EAGAIN) for attributes: stacksize: 1024k, guardsize: 4k, detached.
+     * [1.236s][warning][os,thread] Failed to start the native thread for java.lang.Thread "Thread-4065"
+     * Exception in thread "main" java.lang.OutOfMemoryError: unable to create native thread: possibly out of memory or process/resource limits reached
+     *
+     * pthread is nothing but POSIX thread has come from C programming language, is responsible for creating thread is a unix like machine like mac, linux etc.
+     * So conclusion here is that, we don't have the luxury of creating millions of threads and OS restricts us as it is very expensive.
      * */
-
-    /* *
-     * To create a simple java platform thread.
-     * */
-    private static void platformThreadDemo() {
-        for (int i = 0; i < MAX_PLATFORM; i++) {
+    private static void platformThreadsCreationDemo() {
+        for (int i = 0; i < MAX_PLATFORM_THREADS; i++) {
             int j = i;
             Thread thread = new Thread(() -> Task.ioIntensive(j));
             thread.start();
@@ -41,17 +52,11 @@ public class InboundOutboundTaskDemo {
     }
 
     /* *
-     * Threads created like this are called non-daemon threads or user threads or foreground threads.
-     * These threads will wait for the main application thread to complete. Then all the threads will exit.
-     * Sometimes we want threads to run in the background. We call them daemon threads. e.g: Threads which run Java Garbage collector.
+     * To create platform thread using Thread.Builder.ofPlatform().start(Runnable)
      * */
-
-    /* *
-     * To create platform thread using Thread.Builder
-     * */
-    private static void platformNonDaemonThreadsCreationDemoUsingOfPlatformMethod() {
+    private static void platformThreadsCreationDemoUsingOfPlatformMethod() {
         Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().name("sassaman-non-daemon", 1);
-        for (int i = 0; i < MAX_PLATFORM; i++) {
+        for (int i = 0; i < MAX_PLATFORM_THREADS; i++) {
             int j = i;
             Thread thread = threadBuilder.unstarted(() -> Task.ioIntensive(j));
             thread.start();
@@ -59,18 +64,28 @@ public class InboundOutboundTaskDemo {
     }
 
     /* *
-     * If we try to run the daemon thread, it will exit immediately. As the main thread created 50 background thread and exited immediately.
-     * In this case, how to make our application wait ??
-     * Answer: Use countDownLatch().
+     * By default, threads created like this i.e: using
+     *    1. new Thread(Runnable)
+     *    2. ThreadBuilder.start(Runnable)
+     * are called non-daemon threads or user threads or foreground threads.
+     * These threads will wait for the main application thread to complete. Then all the threads will exit.
+     * Sometimes we want threads to run in the background. We call them daemon threads.
+     * e.g: Threads which run Java Garbage collector.
      * */
 
     /* *
-     * To create platform daemon thread using Thread.Builder
+     * If we try to run the daemon thread, it will exit immediately. As the main thread created 50 background thread and exited immediately.
+     * In this case, how to make our application wait ??
+     * We make them wait using CountDownLatch
+     * */
+
+    /* *
+     * To create platform daemon thread using Thread.Builder.ofPlatform().daemon()
      * */
     private static void platformDaemonThreadCreationDemoUsingOfPlatformMethod() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(MAX_PLATFORM);
+        CountDownLatch latch = new CountDownLatch(MAX_PLATFORM_THREADS);
         Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().daemon().name("sassaman-daemon", 1);
-        for (int i = 0; i < MAX_PLATFORM; i++) {
+        for (int i = 0; i < MAX_PLATFORM_THREADS; i++) {
             int j = i;
             Thread thread = threadBuilder.unstarted(() -> {
                 Task.ioIntensive(j);
@@ -83,7 +98,7 @@ public class InboundOutboundTaskDemo {
 
     /* *
      * VIRTUAL THREADS:
-     * From the above demos, we understood the problems with platform threads. As we reach some resource limits if we create number of threads.
+     * From the above demos, we understood the problems with platform threads. As we reach some resource limits if we create millions of platform threads.
      * From now on we can talk about virtual threads.
      *
      * Java 21 has introduced VirtualThread class which extends the original Thread class (Platform Thread). So basic polymorphism.
@@ -92,22 +107,26 @@ public class InboundOutboundTaskDemo {
     /* *
      * Thread is a public class. So we were able to create instance of it by using new Thread().
      * But VirtualThread class is a package private class. So we can not create an instance of it using new keyword.
-     * So Java has introduced Thread.Builder to create Platform threads and Virtual threads.
+     * So Java has introduced Thread.Builder to create both Platform threads and Virtual threads.
+     * Thread.Builder is an interface. We have 2 different implementations.
+     *    1. Thread.ofPlatform()
+     *    2. Thread.ofVirtual()
      * */
 
     /* *
-     * Platform threads are scheduled by the OS Scheduler where as Virtual threads are scheduled by JVM.
+     * V Imp Note: Platform threads are scheduled by the OS Scheduler whereas Virtual threads are scheduled by JVM.
      * Dedicated Fork-Join Pool gets assigned to schedule the Virtual Threads.
-     * Core Pool Size = Available Processor
+     * Core Pool Size = Number of Available Processor
      * Carrier threads will not be blocked during I/O.
      * */
 
     /* *
-     * To create virtual thread using Thread.Builder
+     * To create virtual thread using Thread.Builder.
+     * This program execution will exit immediately.
      * */
     private static void virtualThreadCreationDemo() {
         Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual();
-        for (int i = 0; i < MAX_VIRTUAL; i++) {
+        for (int i = 0; i < MAX_VIRTUAL_THREADS; i++) {
             int j = i;
             Thread thread = virtualThreadBuilder.unstarted(() -> Task.ioIntensive(j));
             thread.start();
@@ -115,15 +134,18 @@ public class InboundOutboundTaskDemo {
     }
 
     /* *
-     * Virtual threads are daemon threads by default. So running virtual threads will exit immediately.
-     * We can not create non-daemon virtual threads. To make virtual threads wait use countdownLatch().
-     * Virtual threads don't have any default name.
+     * 1. Virtual threads are daemon threads by default. So running virtual threads will exit immediately.
+     * 2. We can not create non-daemon virtual threads.
+     * 3. To make virtual threads wait use countdownLatch().
+     * 4. Virtual threads don't have any default name.
+     * We can create lots of virtual threads scheduled by JVM. We could not create 50000 platform threads,
+     * but if we try to launch 50000 virtual threads, all threads will be launched and will be running in parallel.
      * */
 
     private static void virtualThreadCreationWithCountDownLatchDemo() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(MAX_VIRTUAL);
-        Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual().name("sassaman-virtual", 1);
-        for (int i = 0; i < MAX_VIRTUAL; i++) {
+        CountDownLatch latch = new CountDownLatch(MAX_VIRTUAL_THREADS);
+        Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual().name("sassaman-virtual-", 1);
+        for (int i = 0; i < MAX_VIRTUAL_THREADS; i++) {
             int j = i;
             Thread thread = virtualThreadBuilder.unstarted(() -> {
                 Task.ioIntensive(j);
@@ -136,10 +158,21 @@ public class InboundOutboundTaskDemo {
 
     /* *
      * Virtual threads are simply an illusion provided by Java.
-     * Even though it looks like a thread, it accepts a runnable.
-     * We can do thread.start() / thread.join().
-     * But OS can not see them or schedule them.
+     * Even though it looks like a thread & accepts a runnable & we can do all the thread operations like thread.start() or thread.join(),
+     * but OS can not see them or schedule them, then how does it work or gets scheduled?
+     * Imagine virtual threads as objects. e.g: Person person = new Person("sam");
+     * We should be able to create a million these Person objects in a loop & and store them anywhere,
+     * similarly, virtual threads are not platform threads. Nothing is created at the OS level.
+     * They are like this tiny objects that gets created in the "Heap" region which is controlled by the JVM process as they are considered as objects.
+     * So we should just stop visualizing them as threads and start seeing them as tasks, which accepts a runnable.
+     * Whenever, we do a Thread.ofVirtual().start(() -> someTask()); what actually happens is,
+     * all the virtual threads gets added to an internal queue, and this queue is governed by Fork-Join Pool.
+     * The number of threads in the fork-join pool depends on the number of core processor we have in the machine.
+     * Number of cores = Runtime.getRuntime().availableProcessors();
+     * So the task which is executed by the virtual threads is actually executed by a platform thread (managed by fork-join pool).
+     * Now the question is, in case of blocking operations (Thread.sleep() or a blocking I/O) why millions of virtual threads are not blocked?
+     * This is where JAVA has done the magic.
+     * Whenever a virtual thread (mounted on a platform thread) sees a blocking operation, it parks the task. It unloads itself. This is called Parking. After unloading, it loads itself with a new task, called Unparking.
+     * So virtual threads gets mounted and unmounted on platform threads continuously, and tasks gets parked & unparked continuously by virtual threads. That's the reason virtual threads never gets blocked.
      * */
-
-
 }
