@@ -3,7 +3,9 @@ package com.java.programming.section01;
 import java.util.concurrent.CountDownLatch;
 
 /* *
- * Traditional Java Threads which was introduced 25 years ago, are basically a wrapper around Kernel Threads or OS threads.
+ *
+ *
+ * Traditional Java Threads which was introduced 26 years ago, are basically a wrapper around Kernel Threads or OS threads.
  * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
  * Previously there was 1 kind of thread in Java so no confusion.
  * After the introduction of Java Virtual Threads, to clear confusion
