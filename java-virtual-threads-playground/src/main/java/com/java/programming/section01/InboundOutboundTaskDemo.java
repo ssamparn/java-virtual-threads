@@ -3,8 +3,6 @@ package com.java.programming.section01;
 import java.util.concurrent.CountDownLatch;
 
 /* *
- *
- *
  * Traditional Java Threads which was introduced 26 years ago, are basically a wrapper around Kernel Threads or OS threads.
  * Typically, 1 Java Thread = 1 OS (Kernel) Thread.
  * Previously there was 1 kind of thread in Java so no confusion.
@@ -20,12 +18,12 @@ import java.util.concurrent.CountDownLatch;
  * */
 public class InboundOutboundTaskDemo {
 
-    public static final int MAX_PLATFORM_THREADS = 10;
-//    public static final int MAX_PLATFORM_THREADS = 50000;
-    public static final int MAX_VIRTUAL_THREADS = 24;
-//    public static final int MAX_VIRTUAL_THREADS = 50000;
+    private static final int MAX_PLATFORM_THREADS = 10;
+//    private static final int MAX_PLATFORM_THREADS = 200000;
+//    private static final int MAX_VIRTUAL_THREADS = 24;
+    private static final int MAX_VIRTUAL_THREADS = 20;
 
-    public static void main(String[] args) throws InterruptedException {
+    static void main(String[] args) throws InterruptedException {
 //         platformThreadsCreationDemo();
 //         platformThreadsCreationDemoUsingOfPlatformMethod();
 //         platformDaemonThreadCreationDemoUsingOfPlatformMethod();
@@ -35,8 +33,8 @@ public class InboundOutboundTaskDemo {
 
     /* *
      * To create a simple java platform thread using new Thread(Runnable).
-     * Running 10 or 20 platform threads is easy, but running 50000 Platform threads will lead to OOM.
-     * At some point Native Method, the method which is responsible for starting a thread can not start more threads and will lead to OOM (Stack Memory which is the memory allocated to each thread will be done with space)
+     * Running 10 or 20 platform threads is easy, but running 200000 Platform threads (depends on the OS) will lead to OOM.
+     * At some point Native Method, the method which is responsible for starting a thread can no more start newer threads and will lead to OOM (Stack Memory which is the memory allocated to each thread will be done with space)
      *
      * Failed to start thread "Unknown thread" - pthread_create failed (EAGAIN) for attributes: stacksize: 1024k, guardsize: 4k, detached.
      * [1.236s][warning][os,thread] Failed to start the native thread for java.lang.Thread "Thread-4065"
@@ -57,7 +55,7 @@ public class InboundOutboundTaskDemo {
      * To create platform thread using Thread.Builder.ofPlatform().start(Runnable)
      * */
     private static void platformThreadsCreationDemoUsingOfPlatformMethod() {
-        Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().name("sassaman-non-daemon", 1);
+        Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().name("sassaman-non-daemon-", 1);
         for (int i = 0; i < MAX_PLATFORM_THREADS; i++) {
             int j = i;
             Thread thread = threadBuilder.unstarted(() -> Task.ioIntensive(j));
@@ -69,7 +67,8 @@ public class InboundOutboundTaskDemo {
      * By default, threads created like this i.e: using
      *    1. new Thread(Runnable)
      *    2. ThreadBuilder.start(Runnable)
-     * are called non-daemon threads or user threads or foreground threads.
+     *    3. Executors.newFixedThreadPool()
+     * are called non-daemon threads or user threads or foreground threads unless you explicitly call thread.setDaemon(true).
      * These threads will wait for the main application thread to complete. Then all the threads will exit.
      * Sometimes we want threads to run in the background. We call them daemon threads.
      * e.g: Threads which run Java Garbage collector.
@@ -86,7 +85,7 @@ public class InboundOutboundTaskDemo {
      * */
     private static void platformDaemonThreadCreationDemoUsingOfPlatformMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(MAX_PLATFORM_THREADS);
-        Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().daemon().name("sassaman-daemon", 1);
+        Thread.Builder.OfPlatform threadBuilder = Thread.ofPlatform().daemon().name("sassaman-daemon-", 1);
         for (int i = 0; i < MAX_PLATFORM_THREADS; i++) {
             int j = i;
             Thread thread = threadBuilder.unstarted(() -> {
@@ -124,7 +123,7 @@ public class InboundOutboundTaskDemo {
 
     /* *
      * To create virtual thread using Thread.Builder.
-     * This program execution will exit immediately.
+     * This program execution will exit immediately. But Why? Because virtual threads are daemon threads by default
      * */
     private static void virtualThreadCreationDemo() {
         Thread.Builder.OfVirtual virtualThreadBuilder = Thread.ofVirtual();
@@ -170,6 +169,7 @@ public class InboundOutboundTaskDemo {
      * Whenever, we do a Thread.ofVirtual().start(() -> someTask()); what actually happens is,
      * all the virtual threads gets added to an internal queue, and this queue is governed by Fork-Join Pool.
      * The number of threads in the fork-join pool depends on the number of core processor we have in the machine.
+     * This fork-join pool is a separate fork-join pool, not the common pool.
      * Number of cores = Runtime.getRuntime().availableProcessors();
      * So the task which is executed by the virtual threads is actually executed by a platform thread (managed by fork-join pool).
      * Now the question is, in case of blocking operations (Thread.sleep() or a blocking I/O) why millions of virtual threads are not blocked?
