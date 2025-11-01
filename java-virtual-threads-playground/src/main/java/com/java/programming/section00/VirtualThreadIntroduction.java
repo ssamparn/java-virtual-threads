@@ -1,9 +1,9 @@
 package com.java.programming.section00;
 
 /* *
- * If you are a Java developer, you know that every single statement we write is executed by a thread.
+ * If you are a Java developer, you know that every single statement we write in java is executed by a thread.
  * Thread is the unit of scheduling or unit of concurrency.
- * We developers traditionally used multiple threads to handle concurrent requests.
+ * Traditionally developers have used multiple threads to handle concurrent requests.
  * For example, in a spring boot web application with the tomcat as a servlet container, it comes with a default 200 threads to handle up to 200 concurrent requests, right?
  * So each and every request will be assigned to a thread to process the request.
  * If you imagine each request processing is going to take one second, then our application is capable of processing 200 requests in a second.
@@ -13,7 +13,7 @@ package com.java.programming.section00;
  * OS also restricts us from creating too many threads.
  *
  * Java virtual threads are lightweight and these are not threads, so we can create lots and lots of them to make our application more scalable.
- * We can still write code in the traditional style thread per request style, even though we can create lots of virtual threads.
+ * We can still write code in the traditional style in thread per-request model, even though we can create lots of virtual threads.
  * Remember, there is a catch which we will learn that in depth in section01.
  *
  * */
