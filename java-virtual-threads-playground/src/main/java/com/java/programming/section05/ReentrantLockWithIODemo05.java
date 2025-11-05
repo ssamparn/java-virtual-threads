@@ -18,7 +18,7 @@ public class ReentrantLockWithIODemo05 {
         System.setProperty("jdk.tracePinnedThreads", "short");
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Runnable runnable = () -> log.info("I am a normal task");
 //        platform thread
 //        demo(Thread.ofPlatform());

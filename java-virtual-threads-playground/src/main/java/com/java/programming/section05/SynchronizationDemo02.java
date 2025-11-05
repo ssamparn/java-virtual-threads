@@ -5,20 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class SynchronizationDemo02 {
 
     private static final List<Integer> list = new ArrayList<>();
-//    solution 1: use synchronized list.
+
+    /**
+     * solution 1: use synchronized list.
+     * */
 //    private static final List<Integer> list = Collections.synchronizedList(new ArrayList<>());
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // platform thread
-//        demo(Thread.ofPlatform());
+        demo(Thread.ofPlatform());
         // virtual thread
-        demo(Thread.ofVirtual());
+//        demo(Thread.ofVirtual());
         CommonUtils.sleep(Duration.ofSeconds(2));
         log.info("List size: {}", list.size());
     }
@@ -35,7 +39,9 @@ public class SynchronizationDemo02 {
         }
     }
 
-    // solution 2: use synchronized block
+    /* *
+     * solution 2: use synchronized block
+     * */
     private static synchronized void inMemoryTask() {
         list.add(1);
     }

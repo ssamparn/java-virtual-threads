@@ -10,16 +10,17 @@ import java.util.concurrent.CountDownLatch;
  * If you have a CPU Intensive task, and we modify our production application to use virtual threads,
  * then using virtual threads is not going to improve our application performance.
  * We can continue to use platform threads.
- * But if we have a microservices architecture, and we have a lot of network calls (I/O operations),
+ * But if we have a microservices architecture, and we have a lot of network calls (Blocking I/O operations),
  * then using virtual threads will make more sense.
  * */
 @Slf4j
 public class CpuIntensiveTaskDemo {
 
     private static final int TASKS_COUNT = Runtime.getRuntime().availableProcessors();
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         log.info("Tasks Count: {}", TASKS_COUNT);
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 5; i++) {
             // platform thread
             long totalTimeTakenPlatform = CommonUtils.timer(() -> demo(Thread.ofPlatform()));
             log.info("Total time taken with platform threads {} ms", totalTimeTakenPlatform);

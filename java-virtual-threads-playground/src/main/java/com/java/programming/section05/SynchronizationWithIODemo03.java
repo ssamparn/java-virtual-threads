@@ -9,13 +9,16 @@ import java.util.List;
 
 @Slf4j
 public class SynchronizationWithIODemo03 {
+
     private static final List<Integer> list = new ArrayList<>();
 
     static {
-        System.setProperty("jdk.tracePinnedThreads", "short");
+        // property to set to know if any virtual threads are pinned or not.
+//        System.setProperty("jdk.tracePinnedThreads", "short");
+        System.setProperty("jdk.tracePinnedThreads", "full");
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Runnable runnable = () -> log.info("I am a normal task");
 //        platform thread
 //        demo(Thread.ofPlatform());
@@ -37,19 +40,19 @@ public class SynchronizationWithIODemo03 {
     }
 
     /* *
-     * Because of synchronized code block, only one thread will be able to enter the code block.
-     * Rest of the threads will be sleeping.
+     * Because of synchronized code block, only one thread will be able to enter the synchronized code block.
+     * Rest of the threads will be sleeping / waiting.
      * There is a concept called pinning virtual thread.
      *
      * Pinning Virtual Thread on a Carrier Thread:
-     * Unmounting of virtual thread on carrier thread will not and can not happen until unless it exits the synchronized code block.
+     * Unmounting of virtual thread from carrier thread will not and can not happen until unless it exits the synchronized code block.
      * So Virtual threads in combination with synchronized method or code block can not be unmounted, which would affect scaling.
+     * So synchronized + Blocking I/O + virtual thread = pinning of virtual threads.
+     * V. Imp Note: This is fixed in Java 24 and beyond. Still an issue in Java 24 and less.
      */
     private static synchronized void ioTask() {
         list.add(1);
         // to simulate IO task we are going to block the thread.
-        CommonUtils.sleep(Duration.ofSeconds(4));
+        CommonUtils.sleep(Duration.ofSeconds(1));
     }
-
-
 }

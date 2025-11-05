@@ -11,16 +11,16 @@ import java.time.Duration;
 @Slf4j
 public class ThreadMethodsDemo {
 
-    public static void main(String[] args) throws InterruptedException {
+    static void main(String[] args) throws InterruptedException {
 //        isVirtual();
 //        join();
         interrupt();
+        CommonUtils.sleep(Duration.ofSeconds(1));
     }
 
     /**
      * To check if a thread is virtual
      * */
-
     private static void isVirtual() {
         Thread thread1 = Thread.ofVirtual().start(() -> CommonUtils.sleep(Duration.ofSeconds(2)));
         Thread thread2 = Thread.ofPlatform().start(() -> CommonUtils.sleep(Duration.ofSeconds(2)));
@@ -31,8 +31,8 @@ public class ThreadMethodsDemo {
     }
 
     /* *
-     * To offload multiple time-consuming I/O calls to Virtual threads and wait for them to complete.
-     * Note: We can do better in the actual application whicj we will develop later.
+     * To offload multiple time-consuming I/O calls to virtual threads and wait for them to complete.
+     * Note: We can do better in the actual application which we will develop later.
      * It is a simple thread.join() demo.
      * */
     private static void join() throws InterruptedException {
