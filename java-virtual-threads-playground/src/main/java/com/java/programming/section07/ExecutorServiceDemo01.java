@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 /* *
  * Executor Service Types:
  * 1. Fixed Thread Pool: A thread pool with dedicated number of threads. Usage: A spring boot web application with 200 threads.
- * 2. Single Thread Executor: Same as Fixed Thread Pool. A thread pool with single worker thread. Not configurable. Usage: To execute tasks sequentially.
+ * 2. Single Thread Executor: Same as Fixed Thread Pool. A thread pool with single worker thread. Not configurable. Usage: To execute tasks sequentially one by one. Could be mission-critical tasks.
  * 3. Cached Thread Pool: Also known as Elastic thread pool. Create new thread on demand, threads are platform threads. Reuse existing thread if available. Idle thread life span is 1 min. Usage: Unpredictable workload.
  * 4. Scheduled Thread Pool: Thread Pool which can be used to run tasks at regular interval. Usage: Call a remote service every minute.
  * 5. Thread per task executor: Introduced in Java 21. Creates new thread per task on demand. Behind the scenes it uses Virtual thread builder factory.
@@ -67,7 +67,7 @@ import java.util.concurrent.Executors;
  * */
 
 /**
- * Executor Service in Java 21 now extends the Auto Closeable interface.
+ * In Java 21, Executor Service extends the Auto Closeable interface.
  * */
 @Slf4j
 public class ExecutorServiceDemo01 {
@@ -79,14 +79,17 @@ public class ExecutorServiceDemo01 {
 
     // without auto-closeable we have to issue shutdown for short-lived application
     private static void withoutAutoCloseable() {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(ExecutorServiceDemo01::task);
+        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+        singleThreadExecutor.submit(ExecutorServiceDemo01::task);
         log.info("submitted");
-        executorService.shutdown();
+        singleThreadExecutor.shutdown();
     }
 
     private static void withAutoCloseable() {
-        // Here we are using Executor Service by surrounding it with a try-with-resources block.
+        /**
+         * Here we are using Executor Service by surrounding it with a try-with-resources block.
+         * So executorService.shutdown() is not required.
+         * */
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
             executorService.submit(ExecutorServiceDemo01::task);
             executorService.submit(ExecutorServiceDemo01::task);
@@ -98,8 +101,8 @@ public class ExecutorServiceDemo01 {
     
     /**
      * But are we supposed to use Executor Service with try-with-resources block always?
-     * Answer: It depends. for ex: If you are already using shutdown, then you can use try-with-resources.
-     * For Spring-Web / Server applications etc., Executor Service will be used throughout the application. We do not shut down.
+     * Answer: It depends. for ex: If you are already using shutdown, then you can use try-with-resources & remove the shutdown() method invocation.
+     * For Spring-Web / Server applications etc. which are always running on production, Executor Service will be used (as a bean) throughout the application. We do not need to use shutdown().
      * */
     private static void task() {
         CommonUtils.sleep(Duration.ofSeconds(1));

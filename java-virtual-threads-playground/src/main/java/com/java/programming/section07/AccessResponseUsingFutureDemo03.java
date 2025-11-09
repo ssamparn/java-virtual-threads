@@ -27,7 +27,7 @@ import java.util.concurrent.Future;
 @Slf4j
 public class AccessResponseUsingFutureDemo03 {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    static void main(String[] args) throws ExecutionException, InterruptedException {
         try (ExecutorService virtualThreadExecutorService = Executors.newVirtualThreadPerTaskExecutor()) {
 
             Future<String> productFuture1 = virtualThreadExecutorService.submit(() -> RestClient.getProduct(1));
