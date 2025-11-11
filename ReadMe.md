@@ -1,4 +1,5 @@
 ```bash
+$ cd external-services 
 $ java -jar external-services-v1.jar --server.port=7070
 ```
 

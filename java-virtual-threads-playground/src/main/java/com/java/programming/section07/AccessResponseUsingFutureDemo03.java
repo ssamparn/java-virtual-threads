@@ -20,14 +20,14 @@ import java.util.concurrent.Future;
  *
  * Parallelism:
  *      Breaking a large task into multiple smaller tasks, where each small task can be processed independently to achieve significant performance improvement.
- *      e.g: Sort an array with 6 million elements. Divide the task into 6 threads and each thread processes 1 million elements.
+ *      e.g: Sort an array containing 6 million elements. Divide the task into 6 threads and each thread processes 1 million elements.
  *      e.g: 6 chefs prepares 6 foods.
  * */
 
 @Slf4j
 public class AccessResponseUsingFutureDemo03 {
 
-    static void main(String[] args) throws ExecutionException, InterruptedException {
+        static void main(String[] args) throws ExecutionException, InterruptedException {
         try (ExecutorService virtualThreadExecutorService = Executors.newVirtualThreadPerTaskExecutor()) {
 
             Future<String> productFuture1 = virtualThreadExecutorService.submit(() -> RestClient.getProduct(1));
@@ -43,6 +43,4 @@ public class AccessResponseUsingFutureDemo03 {
             log.info("product-3: {}", product3);
         }
     }
-
-
 }
