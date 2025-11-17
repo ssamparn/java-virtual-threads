@@ -23,7 +23,7 @@ public class RestClient {
     }
 
     private static String callExternalService(String url) {
-        log.info("External service url {}", url);
+        log.info("Calling external service url {}", url);
         try (InputStream inputStream = URI.create(url).toURL().openStream()) { // stream should be closed
             return new String(inputStream.readAllBytes()); // responsive size is small
         } catch (IOException e) {

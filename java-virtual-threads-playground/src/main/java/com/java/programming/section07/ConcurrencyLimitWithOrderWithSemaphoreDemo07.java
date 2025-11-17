@@ -10,8 +10,8 @@ import java.util.concurrent.ThreadFactory;
 @Slf4j
 public class ConcurrencyLimitWithOrderWithSemaphoreDemo07 {
 
-    public static void main(String[] args) {
-        ThreadFactory virtualThreadFactory = Thread.ofVirtual().name("sassaman", 1).factory();
+    static void main(String[] args) {
+        ThreadFactory virtualThreadFactory = Thread.ofVirtual().name("sassaman-", 1).factory();
         ConcurrencyLimiterWithOrder limiter = new ConcurrencyLimiterWithOrder(Executors.newThreadPerTaskExecutor(virtualThreadFactory), 3);
         execute(limiter, 20);
     }
@@ -36,7 +36,6 @@ public class ConcurrencyLimitWithOrderWithSemaphoreDemo07 {
     private static String printProduct(int id) {
         String product = RestClient.getProduct(id);
         log.info("Product Id: {} => with product info: {}", id, product);
-
         return product;
     }
 

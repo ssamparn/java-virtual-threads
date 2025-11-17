@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ScheduledExecutorWithVirtualThreadsDemo08 {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         scheduledTaskExecution();
     }
 
@@ -23,9 +23,9 @@ public class ScheduledExecutorWithVirtualThreadsDemo08 {
         ExecutorService virtualThreadExecutorService = Executors.newVirtualThreadPerTaskExecutor();
 
         try(scheduledExecutorService; virtualThreadExecutorService) {
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
-                virtualThreadExecutorService.submit(() -> printProductInfo(1));
-            }, 0, 2, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleAtFixedRate(
+                    () -> virtualThreadExecutorService.submit(() -> printProductInfo(1)),
+                    0, 2, TimeUnit.SECONDS);
 
             CommonUtils.sleep(Duration.ofSeconds(10));
         }

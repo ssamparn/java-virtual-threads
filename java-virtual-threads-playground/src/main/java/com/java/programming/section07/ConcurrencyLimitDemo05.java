@@ -10,10 +10,18 @@ import java.util.concurrent.ThreadFactory;
 @Slf4j
 public class ConcurrencyLimitDemo05 {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
+        /**
+         * Using cached thread pool.
+         * */
 //        execute(Executors.newCachedThreadPool(), 20);
-        ThreadFactory virtualThreadFactory = Thread.ofVirtual().name("sassaman", 1).factory();
-//        Here we are pooling the virtual threads, but virtual threads are not supposed to be pooled. This is one of the limitation of virtual threads.
+
+       /**
+        * Here we are pooling the virtual threads, but virtual threads are not supposed to be pooled.
+        * But here with the below configurations virtual threads are pooled. If you notice, the same thread is used and reused.
+        * This is one of the limitations of virtual threads.
+        */
+        ThreadFactory virtualThreadFactory = Thread.ofVirtual().name("sassaman-", 1).factory();
         execute(Executors.newFixedThreadPool(3, virtualThreadFactory), 20);
     }
 
@@ -31,9 +39,10 @@ public class ConcurrencyLimitDemo05 {
      * Let's imagine that the product service is a 3rd party service, and we have a contract in place.
      * Because of the contract we are allowed to make 3 concurrent calls.
      * In that case, we can not use cached thread pool. We should use fixed thread pool. But then how should we achieve this using virtual threads?
+     * This is the limitation of virtual threads.
+     * Solution is to use Semaphore.
      * */
     private static void printProductInfo(int id) {
         log.info("Product Id: {} => with product info: {}", id, RestClient.getProduct(id));
     }
-
 }
