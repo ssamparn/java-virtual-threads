@@ -11,7 +11,7 @@ public class ScopedValuesDemo04 {
 
     private static final ScopedValue<String> SESSION_TOKEN = ScopedValue.newInstance();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // platform threads
         Thread.ofPlatform().start(() -> processIncomingRequest());
         Thread.ofPlatform().start(() -> processIncomingRequest());
@@ -24,7 +24,7 @@ public class ScopedValuesDemo04 {
 
     private static void processIncomingRequest() {
         String authToken = authenticate();
-        ScopedValue.runWhere(SESSION_TOKEN, authToken, () -> controller());
+        ScopedValue.where(SESSION_TOKEN, authToken).run(ScopedValuesDemo04::controller);
     }
 
     private static String authenticate() {
@@ -40,7 +40,7 @@ public class ScopedValuesDemo04 {
 
     private static void service() {
         log.info("Before service: {}", SESSION_TOKEN.get());
-        ScopedValue.runWhere(SESSION_TOKEN, "new-token-" + Thread.currentThread().getName(), () -> callExternalService());
+        ScopedValue.where(SESSION_TOKEN, "new-token-" + Thread.currentThread().getName()).run(ScopedValuesDemo04::callExternalService);
         // rebinding the existing value with a new value, but only in the scope of the provided runnable i.e: callExternalService().
         // That's why it has got the name Scoped Value.
         log.info("After service: {}", SESSION_TOKEN.get());

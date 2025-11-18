@@ -36,7 +36,7 @@ public class ScopedValuesDemo03 {
 
     private static final ScopedValue<String> SESSION_TOKEN = ScopedValue.newInstance();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // check if the value is set
         // log.info("isBound: {}", SESSION_TOKEN.isBound());
 
@@ -57,7 +57,7 @@ public class ScopedValuesDemo03 {
 
     private static void processIncomingRequest() {
         String authToken = authenticate();
-        ScopedValue.runWhere(SESSION_TOKEN, authToken, () -> controller());
+        ScopedValue.where(SESSION_TOKEN, authToken).run(ScopedValuesDemo03::controller);
     }
 
     private static String authenticate() {
