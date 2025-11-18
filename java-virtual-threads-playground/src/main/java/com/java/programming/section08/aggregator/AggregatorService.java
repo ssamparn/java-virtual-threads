@@ -19,15 +19,15 @@ public class AggregatorService {
     public ProductDto getProductWithRating(int id) {
         CompletableFuture<String> productFuture = CompletableFuture
                 .supplyAsync(() -> RestClient.getProduct(id), executorService)
-                .exceptionally(t -> "product not found!")
+                .exceptionally(t -> "product not found!") // error handler for product service error scenarios.
                 .orTimeout(1250, TimeUnit.MILLISECONDS) // use a shorter time to trigger the timeout scenarios.
-                .exceptionally(t -> "product service times out!");
+                .exceptionally(t -> "product service times out!"); // error handler for time out error scenarios.
 
         CompletableFuture<Integer> ratingFuture = CompletableFuture
                 .supplyAsync(() -> RestClient.getRating(id), executorService)
-                .exceptionally(t -> -1)
+                .exceptionally(t -> -1) // error handler for rating service error scenarios.
                 .orTimeout(1250, TimeUnit.MILLISECONDS) // use a shorter time to trigger the timeout scenarios.
-                .exceptionally(t -> -2);
+                .exceptionally(t -> -2); // error handler for time out error scenarios.
 
         return new ProductDto(id, productFuture.join(), ratingFuture.join());
     }

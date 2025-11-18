@@ -51,7 +51,8 @@ public class ExecutorServiceTypesDemo02 {
     }
 
     /**
-     * Executor service which creates virtual thread per task (creates virtual threads)
+     * Executor service which creates virtual thread per task (creates virtual threads).
+     * Executors.newVirtualThreadPerTaskExecutor() is a perfect fit for I/O-heavy fan-out/fan-in work.
      */
     private static void virtualThreadPerTaskExecution() {
         execute(Executors.newVirtualThreadPerTaskExecutor(), 20000);

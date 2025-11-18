@@ -11,7 +11,7 @@ public class ThreadLocalDemo01 {
 
     private static final ThreadLocal<String> SESSION_TOKEN = new ThreadLocal<>();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
 //        processIncomingRequest();
 

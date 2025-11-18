@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class GetProductsDemo04 {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    static void main(String[] args) throws ExecutionException, InterruptedException {
         try (ExecutorService virtualThreadExecutorService = Executors.newVirtualThreadPerTaskExecutor()) {
             CompletableFuture<String> productFuture1 = CompletableFuture.supplyAsync(() -> RestClient.getProduct(1), virtualThreadExecutorService);
             CompletableFuture<String> productFuture2 = CompletableFuture.supplyAsync(() -> RestClient.getProduct(2), virtualThreadExecutorService);

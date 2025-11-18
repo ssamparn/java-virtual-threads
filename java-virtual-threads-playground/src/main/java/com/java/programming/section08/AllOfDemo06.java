@@ -8,33 +8,42 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
+/**
+ * CompletableFuture.allOf():
+ * CompletableFuture.allOf(...) is a barrier or blocker that lets you wait for a set of CompletableFutures to finish.
+ * It returns a single CompletableFuture<Void> that:
+ *  - Completes normally when all the supplied futures complete normally.
+ *  - Completes exceptionally if any of the supplied futures complete exceptionally (including cancellation).
+ *  - Is already completed if you pass no futures.
+ *  - Does not collect results—it only signals completion. You must read results from your original futures yourself.
+ * */
 @Slf4j
 public class AllOfDemo06 {
 
-    public static void main(String[] args) {
-        ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
-        AggregatorService aggregatorService = new AggregatorService(executorService);
+    static void main(String[] args) {
 
-        List<CompletableFuture<ProductDto>> completableFutures = IntStream.rangeClosed(1, 50)
-                .mapToObj(id -> CompletableFuture.supplyAsync(() -> aggregatorService.getProductWithRating(id), executorService))
-                .toList();
+        try (ExecutorService virtualThreadExecutor = Executors.newVirtualThreadPerTaskExecutor()) { // Executors.newVirtualThreadPerTaskExecutor() is a perfect fit for I/O-heavy fan-out/fan-in work.
+            AggregatorService aggregatorService = new AggregatorService(virtualThreadExecutor);
 
-        CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new)).join(); // wait for all futures to complete.
+            List<CompletableFuture<ProductDto>> completableFutures = IntStream.rangeClosed(1, 50)
+                    .mapToObj(id -> CompletableFuture.supplyAsync(() -> aggregatorService.getProductWithRating(id), virtualThreadExecutor)
+                            .orTimeout(2, TimeUnit.SECONDS)) // hard timeout per task
+                    .toList();
 
-        List<ProductDto> products = completableFutures.stream()
-                .map(AllOfDemo06::toProductDto)
-                .toList();
+            CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new)).join(); // to await for completion of all futures.
 
-        log.info("products: {}", products);
+            List<ProductDto> products = completableFutures.stream()
+                    .map(AllOfDemo06::toProductDto)
+                    .toList();
+
+            log.info("products: {}", products);
+        }
     }
 
     private static ProductDto toProductDto(CompletableFuture<ProductDto> productFuture) {
-        try {
-            return productFuture.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return productFuture.join(); // throws CompletionException on failure
     }
 }

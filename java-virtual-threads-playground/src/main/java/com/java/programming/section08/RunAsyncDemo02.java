@@ -9,17 +9,23 @@ import java.util.concurrent.Executors;
 
 /**
  * Factory Methods:
- *  Run Async
+ *  runAsync()
  *  Executor
  * */
 @Slf4j
 public class RunAsyncDemo02 {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         log.info("main starts");
 
         runAsyncTask()
-                .thenRun(() -> log.info("It's Done"));
+                .thenRun(() -> log.info("It's Done")); // After the async task gets completed, thenRun() gets executed. Similar to then() operator in reactive programming.
 
+        runErroneousAsyncTask()
+                .thenRun(() -> log.info("It's Done"))
+                .exceptionally(ex -> {
+                    log.error("Exception: {}", ex.getMessage());
+                    return null;
+                });
         CommonUtils.sleep(Duration.ofSeconds(2));
         log.info("main ends");
     }
@@ -30,6 +36,16 @@ public class RunAsyncDemo02 {
             CommonUtils.sleep(Duration.ofSeconds(1));
             log.info("Task Completed...");
         }, Executors.newVirtualThreadPerTaskExecutor());
+        log.info("method ends");
+        return completableFuture;
+    }
+
+    private static CompletableFuture<Void> runErroneousAsyncTask() {
+        log.info("method starts");
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            CommonUtils.sleep(Duration.ofSeconds(1));
+            throw new RuntimeException("oops");
+        }, Executors.newVirtualThreadPerTaskExecutor()); // Without virtual thread per task executor, completable future will use common fork-join pool.
         log.info("method ends");
         return completableFuture;
     }

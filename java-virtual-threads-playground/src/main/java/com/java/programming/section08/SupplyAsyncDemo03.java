@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class SupplyAsyncDemo03 {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         /* *
          * Slow Task
          * */
@@ -29,8 +29,8 @@ public class SupplyAsyncDemo03 {
         log.info("method starts");
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
             CommonUtils.sleep(Duration.ofSeconds(1));
-            return "hi";
-        }, Executors.newVirtualThreadPerTaskExecutor());
+            return "Hi";
+        }, Executors.newVirtualThreadPerTaskExecutor()); // Without virtual thread per task executor, completable future will use common fork-join pool.
 
         log.info("method ends");
         return completableFuture;

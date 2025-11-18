@@ -12,7 +12,7 @@ public class ThreadLocalDemo02 {
 //    private static final ThreadLocal<String> SESSION_TOKEN = new ThreadLocal<>();
     private static final ThreadLocal<String> SESSION_TOKEN = new InheritableThreadLocal<>();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // platform threads
 //        Thread.ofPlatform().start(() -> processIncomingRequest());
 //        Thread.ofPlatform().start(() -> processIncomingRequest());

@@ -15,8 +15,8 @@ public class AggregatorServiceDemo04 {
 
     static void main(String[] args) throws ExecutionException, InterruptedException {
         // beans or singletons
-        ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
-        AggregatorService aggregatorService = new AggregatorService(executorService);
+        ExecutorService virtualThreadExecutor = Executors.newVirtualThreadPerTaskExecutor();
+        AggregatorService aggregatorService = new AggregatorService(virtualThreadExecutor);
 
         // Fetching a single product with rating
         ProductDto product = aggregatorService.getProductWithRating(1);

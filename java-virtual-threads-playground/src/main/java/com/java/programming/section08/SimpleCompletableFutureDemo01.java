@@ -6,10 +6,33 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Difference between join() and get() in completable future?
+ * Both join() and get() are used to retrieve the result of a CompletableFuture, but they differ in exception handling and checked vs unchecked exceptions.
+ *  - V get() throws InterruptedException, ExecutionException:
+ *      Behavior:
+ *          Blocks until the computation is complete.
+ *          Throws checked exceptions:
+ *          InterruptedException if the current thread is interrupted while waiting.
+ *          ExecutionException if the computation threw an exception.
+ *      Usage:
+ *          You must handle these exceptions explicitly (try-catch or throws).
+ *  - V join():
+ *      Behavior:
+ *          Blocks until the computation is complete.
+ *          Throws unchecked exception:
+ *          Wraps any exception in a CompletionException (a runtime exception).
+ *      Usage:
+ *          No need for checked exception handling, but you should still handle runtime exceptions if needed.
+ *
+ * Best Practice:
+ *  - Use join() in modern code where you want less boilerplate and are okay with unchecked exceptions.
+ *  - Use get() when you need explicit handling of interruption and execution exceptions.
+ * */
 @Slf4j
 public class SimpleCompletableFutureDemo01 {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         /* *
          * Fast Task
          * */
@@ -23,8 +46,8 @@ public class SimpleCompletableFutureDemo01 {
          * Slow Task
          * */
         log.info("main starts");
-        slowTask().thenAccept(v -> log.info("Value: {}", v));
-        CommonUtils.sleep(Duration.ofSeconds(2));
+        slowTask().thenAccept(v -> log.info("Value: {}", v)); // we don't have a join().
+        CommonUtils.sleep(Duration.ofSeconds(2)); // blocking main thread as virtual thread is a daemon thread
         log.info("main ends");
     }
 

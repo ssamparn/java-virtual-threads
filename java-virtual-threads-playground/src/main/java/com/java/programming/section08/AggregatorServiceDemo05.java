@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class AggregatorServiceDemo05 {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    static void main(String[] args) {
         // beans or singletons
         ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
         AggregatorService aggregatorService = new AggregatorService(executorService);
