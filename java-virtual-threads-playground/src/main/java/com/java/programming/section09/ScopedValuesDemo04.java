@@ -1,10 +1,47 @@
 package com.java.programming.section09;
 
-import com.java.programming.util.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Duration;
-import java.util.UUID;
+/* *
+ * Scoped Values (A foolproof way to share context):
+ *  1. Introduced in JDK 25.
+ *  2. It is a safe, predictable and efficient way to attach execution-scoped data without relying on develop discipline.
+ *    So that, values that can safely and efficiently be shared to methods without using method parameters.
+ *  3. Thread Local still works, but lifecycle management is manual (set / remove).
+ *  4. Scoped Values are preferred over ThreadLocal variables, especially when using large number of virtual threads.
+ *
+ * Working with Scoped Values:
+ *
+ * Step 1: Generate Key:
+ *   ScopedValue.newInstance(): Returns a new immutable key object.
+ *   Key is used for execution-scoped storage.
+ *   We can call ScopedValue.newInstance() multiple times to create different keys.
+ *  e.g: static final ScopedValue<String> SESSION_TOKEN = ScopedValue.newInstance();
+ *
+ * Step 2: Bind Value:
+ *   ScopedValue.where(KEY, value): Binds value to current thread execution.
+ *  e.g: ScopedValue.where(SESSION_TOKEN, "session-123").run(runnable);
+ *
+ * Step 3: Access the value:
+ *   KEY.get(). To read the value in the current thread execution.
+ *   Works inside the runnable or any method called from it.
+ *   Value automatically cleared after run().
+ * e.g: ScopedValue.where(SESSION_TOKEN, "session-123")
+ *                 .run(() -> {
+ *                      var token = SESSION_TOKEN.get();
+ *                      log.info("token: {}", token)
+ *                  }
+ *  )
+ *
+ *  5. Values are bound to the current thread just before the runnable (or callable) starts.
+ *  6. Values are unbound automatically when the runnable (or callable) completes. No manual clean up needed.
+ *  7. This ensures no leaks, no accidental reuse, and no mutation of the stored data.
+ *
+ * Note: That's wny the value of scoped values are execution time scoped.
+ *
+ *  8. ScopedValues works with both Platform and Virtual threads.
+ *
+ * */
 
 @Slf4j
 public class ScopedValuesDemo04 {
@@ -12,41 +49,20 @@ public class ScopedValuesDemo04 {
     private static final ScopedValue<String> SESSION_TOKEN = ScopedValue.newInstance();
 
     static void main(String[] args) {
-        // platform threads
-        Thread.ofPlatform().start(() -> processIncomingRequest());
-        Thread.ofPlatform().start(() -> processIncomingRequest());
-
-        // virtual threads
-//        Thread.ofVirtual().name("virtual-thread-01").start(() -> processIncomingRequest());
-//        Thread.ofVirtual().name("virtual-thread-02").start(() -> processIncomingRequest());
-        CommonUtils.sleep(Duration.ofSeconds(1));
+        checkBinding();
+        ScopedValue.where(SESSION_TOKEN, "session-token-1").run(() -> checkBinding());
+        checkBinding();
     }
 
-    private static void processIncomingRequest() {
-        String authToken = authenticate();
-        ScopedValue.where(SESSION_TOKEN, authToken).run(ScopedValuesDemo04::controller);
-    }
+    private static void checkBinding() {
+        // check if the value is set
+        log.info("isBound?: {}", SESSION_TOKEN.isBound());
 
-    private static String authenticate() {
-        String authToken = UUID.randomUUID().toString();
-        log.info("auth token: {}", authToken);
-        return authToken;
-    }
+        // get the value
+//        log.info("value: {}", SESSION_TOKEN.get());
 
-    private static void controller() {
-        log.info("controller: {}", SESSION_TOKEN.get());
-        service();
-    }
-
-    private static void service() {
-        log.info("Before service: {}", SESSION_TOKEN.get());
-        ScopedValue.where(SESSION_TOKEN, "new-token-" + Thread.currentThread().getName()).run(ScopedValuesDemo04::callExternalService);
-        // rebinding the existing value with a new value, but only in the scope of the provided runnable i.e: callExternalService().
-        // That's why it has got the name Scoped Value.
-        log.info("After service: {}", SESSION_TOKEN.get());
-    }
-
-    private static void callExternalService() {
-        log.info("preparing HTTP request with token: {}", SESSION_TOKEN.get());
+        // set a default value
+        log.info("value: {}", SESSION_TOKEN.orElse("default value"));
+        // But how to set a value? Remember that Scoped value is trying to solve some of the design flaws of ThreadLocal. So we can not set any value.
     }
 }
