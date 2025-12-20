@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/java-virtual-threads-demo/spring-web-rest-call/pom.xml" />
         <option value="$PROJECT_DIR$/java-virtual-threads-demo/spring-webflux-rest-call/pom.xml" />
         <option value="$PROJECT_DIR$/java-virtual-threads-demo/virtual-thread-rest-call/pom.xml" />
+        <option value="$PROJECT_DIR$/java-virtual-threads-stream-gatherer-app/pom.xml" />
       </list>
     </option>
   </component>

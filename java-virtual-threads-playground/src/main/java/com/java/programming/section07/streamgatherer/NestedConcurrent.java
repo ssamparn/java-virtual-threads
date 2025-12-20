@@ -30,7 +30,6 @@ public class NestedConcurrent {
      *
      * Outer layer: mapConcurrent(10, ...) runs up to 10 product Ids concurrently across the stream.
      * Inner layer: For each productId, we use CompletableFuture.supplyAsync() to run the two service calls (description and rating) in parallel.
-     *
      * So you have two levels of concurrency:
      *
      * Stream-level concurrency (processing multiple Ids at once).
