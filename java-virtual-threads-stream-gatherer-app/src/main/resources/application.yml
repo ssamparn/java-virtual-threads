@@ -1,3 +1,11 @@
 spring:
+  main:
+    web-application-type: none
   application:
     name: java-virtual-threads-stream-gatherer-app
+  threads:
+    virtual:
+      enabled: true
+
+geo-data-service:
+  url: http://localhost:7070/geo
