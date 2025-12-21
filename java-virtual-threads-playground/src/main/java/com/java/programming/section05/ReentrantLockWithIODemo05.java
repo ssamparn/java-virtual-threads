@@ -49,6 +49,5 @@ public class ReentrantLockWithIODemo05 {
         } finally {
             lock.unlock(); // release the lock
         }
-
     }
 }

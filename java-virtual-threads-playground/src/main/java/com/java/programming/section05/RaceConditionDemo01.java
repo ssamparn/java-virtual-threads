@@ -13,10 +13,10 @@ import java.util.List;
  * These threads can talk to one another by using a shared object. This communication will be a lot more efficient than 2 processes talking to one another by using protocols like Http, etc.
  * However, the problem in using the shared object with the multiple thread is race condition and data corruption.
  * This problem is nothing new. Java already solved this problem by providing a mechanism called synchronization.
- * Synchronization is a mechanism to control access to shared resources or critical section of code in a multithreaded environment.
+ * Synchronization is a mechanism to provide controlled access to shared resources or critical section of code in a multithreaded environment.
  * It ensures that only one thread can access a code block or a method at a time, preventing potential race conditions and data corruption.
 
- * Please do note that the usual multithreading challenges like a race condition, deadlock etc are all still applicable for virtual threads.
+ * Please do note that the usual multithreading challenges like race conditions, deadlocks etc. are all still applicable for virtual threads.
  * Even though we have been saying that virtual threads are simply task, they are all getting executed by carrier threads.
  * */
 @Slf4j

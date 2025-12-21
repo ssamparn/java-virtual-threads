@@ -27,11 +27,11 @@ package com.java.programming.section10;
  *
  * Let's discuss how we will be using the structured task scope step by step.
  *
- *   Step 1: Choose a Joiner Strategy:
+ *   Step 1: Choose a Joiner Strategy(There are 5 built-in Joiner strategies):
  *      Joiner is an interface that defines how subtasks complete. We can also provide custom strategy.
  *      Joiner.allSuccessfulOrThrow(): All tasks must succeed
- *      Joiner.anySuccessfulResultOrThrow(): Atleast one succeeds
- *      Joiner.awaitAll(): Success / Failure - Wait for all to finish.
+ *      Joiner.anySuccessfulResultOrThrow(): At least one succeeds
+ *      Joiner.awaitAll(): Success / Failure - Wait for all to finish
  *
  *  Step 2: Fork Subtasks / Submit Work:
  *      Once the joiner strategy is identified & decided, and submit the tasks using fork().
@@ -53,6 +53,50 @@ package com.java.programming.section10;
  *              }
  *
  * V Imp Note: The behavior of join() depends on the Joiner strategy.
+ *
+ * Minimal side by side examples of different joiner strategies:
+ * 1. Default (open() — fail if any fails):
+
+        try (var scope = StructuredTaskScope.open()) {
+            var a = scope.fork(() -> callA());
+            var b = scope.fork(() -> callB());
+            scope.join();                       // throws if A or B failed
+            return combine(a.get(), b.get());   // both succeeded
+        }
+
+ * 2. All must succeed, homogeneous (allSuccessfulOrThrow):
+
+        try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.<String>allSuccessfulOrThrow())) {
+            var s1 = scope.fork(() -> fetch("A"));
+            var s2 = scope.fork(() -> fetch("B"));
+            var results = scope.join().map(StructuredTaskScope.Subtask::get).toList();
+        }
+
+ * 3. Any first winner (anySuccessfulResultOrThrow):
+
+        try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.<Response>anySuccessfulResultOrThrow())) {
+            scope.fork(() -> hitRegion("eu-west"));
+            scope.fork(() -> hitRegion("us-east"));
+            scope.fork(() -> hitRegion("ap-south"));
+            return scope.join(); // the first successful Response
+        }
+
+ * 4. Await all regardless (awaitAll):
+
+        try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.<Void>awaitAll())) {
+            scope.fork(() -> logMetrics());
+            scope.fork(() -> warmCache());
+            scope.fork(() -> pushToQueue());
+            scope.join(); // never throws; inspect each subtask.state() afterwards
+        }
+
+ * 5. Custom stop rule (allUntil):
+
+        var joiner = StructuredTaskScope.Joiner.<Result>allUntil(st -> st.state() == StructuredTaskScope.Subtask.State.SUCCESS);
+        try (var scope = StructuredTaskScope.open(joiner)) {
+            urls.forEach(u -> scope.fork(() -> fetch(u)));
+            var subtasks = scope.join(); // cancelled after first SUCCESS
+        }
  * */
 
 public class StructuredConcurrency {

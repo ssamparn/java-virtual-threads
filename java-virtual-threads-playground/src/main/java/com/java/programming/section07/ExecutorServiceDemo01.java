@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 /**
  * So far we have been playing with the threads directly. Our intention was to learn how things are working behind the scenes,
  * but in the actual applications, we will not want to deal with the low level thread objects.
- * Instead, we need a high level concurrency framework. That is what the executor service is.
+ * Instead, we need a high level concurrency framework. That is what the Executor Service is.
  *
  * Executor service in a high level abstracts the thread management and provides a simple interface for developers like us to handle the task.
  * Executor service was introduced long back as part of Java 5.
@@ -77,7 +77,9 @@ public class ExecutorServiceDemo01 {
 //        withoutAutoCloseable();
     }
 
-    // without auto-closeable we have to issue shutdown for short-lived application
+    /**
+     * Without auto-closeable we have to issue shutdown for short-lived application
+     */
     private static void withoutAutoCloseable() {
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.submit(ExecutorServiceDemo01::task);
@@ -85,11 +87,11 @@ public class ExecutorServiceDemo01 {
         singleThreadExecutor.shutdown();
     }
 
+    /**
+     * Here we are using Executor Service by surrounding it with a try-with-resources block.
+     * So executorService.shutdown() is not required.
+     * */
     private static void withAutoCloseable() {
-        /**
-         * Here we are using Executor Service by surrounding it with a try-with-resources block.
-         * So executorService.shutdown() is not required.
-         * */
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
             executorService.submit(ExecutorServiceDemo01::task);
             executorService.submit(ExecutorServiceDemo01::task);
@@ -102,11 +104,11 @@ public class ExecutorServiceDemo01 {
     /**
      * But are we supposed to use Executor Service with try-with-resources block always?
      * Answer: It depends. for ex: If you are already using shutdown, then you can use try-with-resources & remove the shutdown() method invocation.
-     * For Spring-Web / Server applications etc. which are always running on production, Executor Service will be used (as a bean) throughout the application. We do not need to use shutdown().
+     * For Spring-Web / Server applications etc. which are always running on production, Executor Service will be used (as a bean) throughout the application.
+     * So, we do not need to use shutdown().
      * */
     private static void task() {
         CommonUtils.sleep(Duration.ofSeconds(1));
         log.info("task executed!");
     }
-
 }

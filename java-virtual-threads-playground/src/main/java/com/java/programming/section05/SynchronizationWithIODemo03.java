@@ -40,9 +40,10 @@ public class SynchronizationWithIODemo03 {
     }
 
     /* *
-     * Because of synchronized code block, only one thread will be able to enter the synchronized code block.
-     * Rest of the threads will be sleeping / waiting.
-     * There is a concept called pinning virtual thread.
+     * Thread Pinning: Java 21-23:
+     *   1. Pinning is the situation where a virtual thread must stay on its carrier thread an CANNOT be unmounted while executing synchronized or native code.
+     *   2. This prevents the JVM from switching to another virtual thread and reduces scalability.
+     * Because of synchronized code block, only one thread will be able to enter the synchronized code block. Rest of the threads will be sleeping / waiting.
      *
      * Pinning Virtual Thread on a Carrier Thread:
      * Unmounting of virtual thread from carrier thread will not and can not happen until unless it exits the synchronized code block.

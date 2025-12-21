@@ -13,8 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * Reentrant Lock:
  *
  * Synchronized was introduced long back in Java. Then Java 5 introduced Reentrant Lock.
- * This is exactly like synchronized, and it offers some additional flexibility.
- * Reentrant Lock = Synchronized + Flexibility.
+ * This is exactly like synchronized, and it offers some additional flexibility & control.
+ * Reentrant Lock = Synchronized + Flexibility & Control.
  *  - Fairness Policy: With Reentrant Lock, we can enable fairness policy. The policy states that a thread which has been waiting longer will get the chance to acquire the lock.
  *  - tryLock with Timeout: With Reentrant Lock, we can also enable tryLock with Timeout which states that the maximum time for a thread to wait to acquire the lock.
  * */

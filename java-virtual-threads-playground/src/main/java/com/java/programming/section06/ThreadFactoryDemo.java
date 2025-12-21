@@ -28,7 +28,6 @@ public class ThreadFactoryDemo {
      * It is a simple demo. In the real life, we can use executor service etc.
      * Virtual threads are cheap to create.
      * */
-
     private static void demo(ThreadFactory threadFactory) {
         for (int i = 0; i < 3; i++) {
             Thread mainThread = threadFactory.newThread(() -> {

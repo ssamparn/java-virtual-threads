@@ -34,6 +34,4 @@ public class ScheduledExecutorWithVirtualThreadsDemo08 {
     private static void printProductInfo(int id) {
         log.info("Product Id: {} => with product info: {}", id, RestClient.getProduct(id));
     }
-
-
 }
